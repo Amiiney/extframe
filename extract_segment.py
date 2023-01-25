@@ -1,6 +1,7 @@
 import os
 import cv2
 import pandas as pd
+import numpy as np
 import warnings
 
 warnings.filterwarnings("ignore")
@@ -30,8 +31,11 @@ def segment(CFG):
     fps = vidcap.get(cv2.CAP_PROP_FPS)
 
     ## filter the segment
-    initial_second = CFG.start * fps
-    final_second = CFG.end * fps
+    initial_second = np.array(CFG.start) * fps
+    print(CFG.start, initial_second)
+    final_second = np.array(CFG.end) * fps
+
+  
 
     # Generate the video name for the folder
     vid_id = VID_PATH.split('/')[-1].split('.')[0]
@@ -48,25 +52,27 @@ def segment(CFG):
     while success:
 
         # Save the frames within the indicated segment
-        if count > initial_second and count < final_second:
-            cv2.imwrite(f"{save_path}/{vid_id}_{count}.jpg", image) # save frame as JPEG file      
+        for st, ft in zip(initial_second, final_second):
+            if count > st and count < ft:
+                cv2.imwrite(f"{save_path}/{vid_id}_{count}.jpg", image) # save frame as JPEG file      
+                success,image = vidcap.read()
+
+                if VERBOSE:
+                    print(f'{count}: Read a new frame: ', success)
+
+                frames.append(count)
+                videos.append(vid_id)
+                image_path.append(f"{vid_id}/{vid_id}_{count}.jpg")
+
+
             success,image = vidcap.read()
-
-            if VERBOSE:
-                print(f'{count}: Read a new frame: ', success)
-
-            frames.append(count)
-            videos.append(vid_id)
-            image_path.append(f"{vid_id}/{vid_id}_{count}.jpg")
-
-
-        success,image = vidcap.read()
-        count += 1
+            count += 1
             
     # Store all the saved images to csv
     df['clip_name'] = videos
     df['frames'] = frames
     df['image_path'] = image_path
+    
     if CFG.save_csv:
         csv_path = os.path.join(CFG.save_path, vid_id, f"segment{CFG.start}_{CFG.end}.csv")
         df.to_csv(csv_path)

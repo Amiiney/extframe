@@ -1,5 +1,6 @@
 video_path : 
 save_path : 
-start : 3
-end : 4
 save_csv: false
+
+start : [1,5,19]
+end : [2,6,20]
