@@ -25,50 +25,45 @@ image_path = []
 for vid in vids:
 
     # Capture the frames
-    vidcap = cv2.VideoCapture(f'{VID_PATH}/{vid}')
-    
+    vidcap = cv2.VideoCapture(f"{VID_PATH}/{vid}")
+
     # Get the fps of the individual video
     # Get fps of the video
     fps = vidcap.get(cv2.CAP_PROP_FPS)
 
-    
-    
-    success,image = vidcap.read()
-    count = 0 
-    
+    success, image = vidcap.read()
+    count = 0
+
     # Generate the video name for the folder
-    vid_id = vid.replace('.mp4', '')
+    vid_id = vid.replace(".mp4", "")
     save_path = f"{MAIN_SAVE_PATH}/{vid_id}"
 
     # Create the video folders
     if not os.path.exists(save_path):
         os.mkdir(save_path)
 
-
     while success:
-        
+
         # Save the frames based on the frame rate
-        
+
         #### Add the condition for the extraction of 2 and 5 fps
-        
-        
+
         if (count % fps) == 0:
-            cv2.imwrite(f"{save_path}/{count}.jpg", image)     # save frame as JPEG file      
-            success,image = vidcap.read()
-            
+            cv2.imwrite(f"{save_path}/{count}.jpg", image)  # save frame as JPEG file
+            success, image = vidcap.read()
+
             if VERBOSE:
-                print(f'{count}: Read a new frame: ', success)
-            
+                print(f"{count}: Read a new frame: ", success)
+
             frames.append(count)
             videos.append(vid.replace(".mp4", ""))
             image_path.append(f"{vid_id}/{count}.jpg")
-            
 
-        success,image = vidcap.read()
+        success, image = vidcap.read()
         count += 1
-        
+
 # Store all the saved images to csv
-df['clip_name'] = videos
-df['frames'] = frames
-df['image_path'] = image_path
+df["clip_name"] = videos
+df["frames"] = frames
+df["image_path"] = image_path
 df.to_csv(f"{MAIN_SAVE_PATH}/dataset_fr.csv")
