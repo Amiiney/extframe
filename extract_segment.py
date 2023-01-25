@@ -32,10 +32,7 @@ def segment(CFG):
 
     ## filter the segment
     initial_second = np.array(CFG.start) * fps
-    print(CFG.start, initial_second)
     final_second = np.array(CFG.end) * fps
-
-  
 
     # Generate the video name for the folder
     vid_id = VID_PATH.split('/')[-1].split('.')[0]

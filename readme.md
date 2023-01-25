@@ -24,9 +24,9 @@ The command has 4 parameters:
 
 `save_path`: path to save the frames (a whole folder will be generated automatically)
 
-`start`: List of initial second of each segment Ex: [0,23,43,60]
+`start`: List of initial seconds of each segment Ex: [0,23,43,60]
 
-`end`: List of the last second of each segment Ex: [1,25,45,64]
+`end`: List of the last seconds of each segment Ex: [1,25,45,64]
 
 `save_csv`: true/false saves a csv with the frame number and path
 
