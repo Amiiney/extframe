@@ -19,10 +19,15 @@ pip install -r requirements.txt
 
 ## 4- Extract the segments
 The command has 4 parameters:
+
 `video_path` : path to the video
+
 `save_path`: path to save the frames (a whole folder will be generated automatically)
+
 `start`: initial second of the segment
+
 `end`: last second of the segment
+
 `save_csv`: true/false saves a csv with the frame number and path
 
 
