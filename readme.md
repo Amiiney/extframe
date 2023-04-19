@@ -18,7 +18,7 @@ pip install -r requirements.txt
 ```
 
 ## 4- Extract the segments
-The command has 4 parameters:
+The command has 5 parameters:
 
 `video_path` : path to the video
 
