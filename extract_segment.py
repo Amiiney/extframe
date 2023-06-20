@@ -47,8 +47,8 @@ def segment(CFG):
     while success:
 
         # Save the frames within the indicated segment
-        for st, ft in zip(initial_second, final_second) and (count % fps) == 0:
-            if count > st and count < ft:
+        for st, ft in zip(initial_second, final_second):
+            if count > st and count < ft and count % fps == 0:
                 cv2.imwrite(
                     f"{save_path}/{vid_id}_{count}.jpg", image
                 )  # save frame as JPEG file
