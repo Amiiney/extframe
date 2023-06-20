@@ -43,15 +43,17 @@ def segment(CFG):
 
     success, image = vidcap.read()  # Frame capture
     count = 0  # Initialize frame count
+    all_count = 0
 
     while success:
-
+        all_count += 1
         # Save the frames within the indicated segment
         for st, ft in zip(initial_second, final_second):
+
             if count > st and count < ft and count % fps == 0:
-                print(f"Extracting frame {count} at time stamp {count/fps}")
+                print(f"Extracting frame {count} at time stamp {all_count/fps}")
                 cv2.imwrite(
-                    f"{save_path}/{vid_id}_{count}.jpg", image
+                    f"{save_path}/{vid_id}_{all_count/fps}.jpg", image
                 )  # save frame as JPEG file
                 success, image = vidcap.read()
 
@@ -60,7 +62,7 @@ def segment(CFG):
 
                 frames.append(count)
                 videos.append(vid_id)
-                image_path.append(f"{vid_id}/{vid_id}_{count/fps}.jpg")
+                image_path.append(f"{vid_id}/{vid_id}_{all_count/fps}.jpg")
 
             success, image = vidcap.read()
             count += 1
