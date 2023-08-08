@@ -27,7 +27,7 @@ def segment(CFG):
     vidcap = cv2.VideoCapture(f"{VID_PATH}")
 
     # Get fps of the video
-    fps = vidcap.get(cv2.CAP_PROP_FPS)
+    fps = round(vidcap.get(cv2.CAP_PROP_FPS))
 
     ## filter the segment
     initial_second = np.array(CFG.start) * fps
