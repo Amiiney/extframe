@@ -8,7 +8,7 @@ conda create -n extframes python=3.9
 
 ## 2- cd to the extract_frames repository
 ```
-cd YOUR_PARENT_PATH/extract_frames
+cd YOUR_PARENT_PATH/extframes
 ```
 
 
