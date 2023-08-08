@@ -10,7 +10,7 @@ warnings.filterwarnings("ignore")
 def segment(CFG):
     # Path to the folder containing the mp4 videos
     VID_PATH = CFG.video_path
-
+    print(VID_PATH)
     # Empty folder to save the videos: MAIN_SAVE_PATH/VIDEOS/FRAMES
     MAIN_SAVE_PATH = CFG.save_path
 
@@ -27,7 +27,7 @@ def segment(CFG):
     vidcap = cv2.VideoCapture(f"{VID_PATH}")
 
     # Get fps of the video
-    fps = vidcap.get(cv2.CAP_PROP_FPS)
+    fps = round(vidcap.get(cv2.CAP_PROP_FPS))
 
     ## filter the segment
     initial_second = np.array(CFG.start) * fps
@@ -49,9 +49,9 @@ def segment(CFG):
         all_count += 1
         # Save the frames within the indicated segment
         for st, ft in zip(initial_second, final_second):
-
+            #print(st, ft, count)
             if count > st and count < ft and count % fps == 0:
-                print(f"Extracting frame {count} at time stamp {all_count/fps}")
+
                 cv2.imwrite(
                     f"{save_path}/{vid_id}_{all_count/fps}.jpg", image
                 )  # save frame as JPEG file
