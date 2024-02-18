@@ -2,5 +2,7 @@ video_path :
 save_path : 
 save_csv: false
 
-start : [1,5,19]
-end : [2,6,20]
+start : [1]
+end : [10000]
+
+verbose: false

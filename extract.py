@@ -2,68 +2,44 @@ import os
 import cv2
 import pandas as pd
 
-# Path to the folder containing the mp4 videos
-VID_PATH = ""
+def extract_frames(CFG):
+    """
+    Extract frames from a video and save them as images.
 
-# Empty folder to save the videos: MAIN_SAVE_PATH/VIDEOS/FRAMES
-MAIN_SAVE_PATH = ""
+    Args:
+        CFG: A configuration object containing parameters for frame extraction.
 
-# Get a list of all the videos (They should all be in the same folder)
-vids = os.listdir(VID_PATH)
+    Returns:
+        None
+    """
+    # Generate the video name for the folder
+    vid_name = os.path.splitext(os.path.basename(CFG.video_path))[0]
+    save_path = os.path.join(CFG.save_path, vid_name)
 
-
-# Initiate an empty dataframe to save the videos, frames and paths
-df = pd.DataFrame()
-VERBOSE = False
-
-# Empty lists to save the videos, frames, paths
-frames = []
-videos = []
-image_path = []
-
-# Loop over the videos
-for vid in vids:
+    # Create the video folders if it doesn't exist
+    os.makedirs(save_path, exist_ok=True)
 
     # Capture the frames
-    vidcap = cv2.VideoCapture(f"{VID_PATH}/{vid}")
+    vidcap = cv2.VideoCapture(CFG.video_path)
 
-    # Get the fps of the individual video
-    # Get fps of the video
-    fps = vidcap.get(cv2.CAP_PROP_FPS)
+    # Get the fps of the video
+    fps = int(vidcap.get(cv2.CAP_PROP_FPS))
 
     success, image = vidcap.read()
     count = 0
 
-    # Generate the video name for the folder
-    vid_id = vid.replace(".mp4", "")
-    save_path = f"{MAIN_SAVE_PATH}/{vid_id}"
-
-    # Create the video folders
-    if not os.path.exists(save_path):
-        os.mkdir(save_path)
-
     while success:
-
         # Save the frames based on the frame rate
+        if count % fps == 0:
+            timestamp = count / fps
+            frame_filename = f"{timestamp:.2f}.jpg"
+            frame_path = os.path.join(save_path, frame_filename)
+            cv2.imwrite(frame_path, image)  # Save frame as JPEG file
 
-        #### Add the condition for the extraction of 2 and 5 fps
-
-        if (count % fps) == 0:
-            cv2.imwrite(f"{save_path}/{count}.jpg", image)  # save frame as JPEG file
-            success, image = vidcap.read()
-
-            if VERBOSE:
-                print(f"{count}: Read a new frame: ", success)
-
-            frames.append(count)
-            videos.append(vid.replace(".mp4", ""))
-            image_path.append(f"{vid_id}/{count}.jpg")
+            if CFG.verbose:
+                print(f"{timestamp}: Read a new frame")
 
         success, image = vidcap.read()
         count += 1
 
-# Store all the saved images to csv
-df["clip_name"] = videos
-df["frames"] = frames
-df["image_path"] = image_path
-df.to_csv(f"{MAIN_SAVE_PATH}/dataset_fr.csv")
+    print(f"Frames saved at {save_path}")

@@ -1,10 +1,10 @@
 import hydra
-from extract_segment import segment
+from extract import extract_frames
 
 
 @hydra.main(config_name="config")
 def run(CFG):
-    segment(CFG)
+    extract_frames(CFG)
 
 
 if __name__ == "__main__":

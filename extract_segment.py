@@ -1,79 +1,57 @@
 import os
 import cv2
-import pandas as pd
 import numpy as np
 import warnings
 
 warnings.filterwarnings("ignore")
 
-
 def segment(CFG):
-    # Path to the folder containing the mp4 videos
-    VID_PATH = CFG.video_path
-    print(VID_PATH)
-    # Empty folder to save the videos: MAIN_SAVE_PATH/VIDEOS/FRAMES
-    MAIN_SAVE_PATH = CFG.save_path
+    """
+    Segment the frames of a video based on the specified time interval and save them as images.
 
-    # Initiate an empty dataframe to save the videos, frames and paths
-    df = pd.DataFrame()
-    VERBOSE = False
+    Args:
+        CFG: A configuration object containing parameters for video processing.
 
-    # Empty lists to save the videos, frames, paths
-    frames = []
-    videos = []
-    image_path = []
-
+    Returns:
+        None
+    """
     # Capture the frames
-    vidcap = cv2.VideoCapture(f"{VID_PATH}")
+    vidcap = cv2.VideoCapture(CFG.video_path)
 
     # Get fps of the video
     fps = round(vidcap.get(cv2.CAP_PROP_FPS))
 
-    ## filter the segment
+    # Calculate frame indices for the segment
     initial_second = np.array(CFG.start) * fps
     final_second = np.array(CFG.end) * fps
 
     # Generate the video name for the folder
-    vid_id = VID_PATH.split("/")[-1].split(".")[0]
-    save_path = f"{MAIN_SAVE_PATH}/{vid_id}"
+    vid_id = os.path.splitext(os.path.basename(CFG.video_path))[0]
+    save_path = os.path.join(CFG.save_path, vid_id)
 
-    # Create the video folders
-    if not os.path.exists(save_path):
-        os.mkdir(save_path)
+    # Create the video folders if it doesn't exist
+    os.makedirs(save_path, exist_ok=True)
 
     success, image = vidcap.read()  # Frame capture
-    count = 0  # Initialize frame count
-    all_count = 0
+    count = 0
+
+
 
     while success:
-        all_count += 1
+        count += 1
         # Save the frames within the indicated segment
         for st, ft in zip(initial_second, final_second):
-            #print(st, ft, count)
-            if count > st and count < ft and count % fps == 0:
+            if st < count < ft and count % fps == 0:
+                # Save frame as JPEG file
+                frame_timestamp = count / fps  # Correct calculation of timestamp
+                frame_filename = f"{vid_id}_{frame_timestamp:.2f}.jpg"  # Format timestamp
+                frame_path = os.path.join(save_path, frame_filename)
+                cv2.imwrite(frame_path, image)
 
-                cv2.imwrite(
-                    f"{save_path}/{vid_id}_{all_count/fps}.jpg", image
-                )  # save frame as JPEG file
-                success, image = vidcap.read()
+                if CFG.verbose:
+                    print(f"{frame_timestamp}: Read a new frame: ", success)
 
-                if VERBOSE:
-                    print(f"{count}: Read a new frame: ", success)
+              
+        success, image = vidcap.read()
 
-                frames.append(count)
-                videos.append(vid_id)
-                image_path.append(f"{vid_id}/{vid_id}_{all_count/fps}.jpg")
-
-            success, image = vidcap.read()
-            count += 1
-
-    # Store all the saved images to csv
-    df["clip_name"] = videos
-    df["frames"] = frames
-    df["image_path"] = image_path
-
-    if CFG.save_csv:
-        csv_path = os.path.join(
-            CFG.save_path, vid_id, f"segment{CFG.start}_{CFG.end}.csv"
-        )
-        df.to_csv(csv_path)
+    print(f"Frames saved at {save_path}")
