@@ -24,14 +24,14 @@ The command has 5 parameters:
 
 `save_path`: path to save the frames (a whole folder will be generated automatically)
 
-`start`: List of initial seconds of each segment Ex: [0,23,43,60]
+`start`: star time in seconds. Ex: 0
 
-`end`: List of the last seconds of each segment Ex: [1,25,45,64]
+`end`: End time in seconds. Ex: 55
 
 `save_csv`: true/false saves a csv with the frame number and path
 
 
 ```
-python main.py video_path= parent_path/video.mp4 save_path= parent_path start=[0,23,43,60] end=[1,25,45,64]
+python main.py video_path= parent_path/video.mp4 save_path= parent_path start=0 end=55
 
 ```

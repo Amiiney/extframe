@@ -2,6 +2,7 @@ import os
 import cv2
 import pandas as pd
 
+
 def extract_frames(CFG):
     """
     Extract frames from a video and save them as images.
